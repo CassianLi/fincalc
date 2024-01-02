@@ -91,7 +91,7 @@ func calcNvrByInvest(investAmount float64, investPeriod int, incomeAmount float6
 func calcNominalCashFlows(cashFlows []float64, inflationRate float64) []float64 {
 	var nominalCashFlows []float64
 	for i, cashFlow := range cashFlows {
-		nominalCashFlows = append(nominalCashFlows, cashFlow*math.Pow(1+inflationRate, float64(i)))
+		nominalCashFlows = append(nominalCashFlows, cashFlow/math.Pow(1+inflationRate, float64(i)))
 	}
 	return nominalCashFlows
 }
