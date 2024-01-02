@@ -4,6 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"math"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -21,6 +22,9 @@ var incomeStart int
 
 // 是否返还本金
 var isReturnPrincipal bool
+
+// 通胀率
+var inflationRate float64
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -57,6 +61,7 @@ func init() {
 	rootCmd.PersistentFlags().IntVarP(&period, "income-period", "P", 1, "总计期数，默认为: 1")
 	rootCmd.PersistentFlags().IntVarP(&incomeStart, "income-start", "S", 1, "第几期开始收益，默认为: 1")
 	rootCmd.PersistentFlags().BoolVarP(&isReturnPrincipal, "is-return-principal", "r", true, "是否返还本金，默认为: true")
+	rootCmd.PersistentFlags().Float64VarP(&inflationRate, "inflation-rate", "I", 0, "通胀率，允许输入通胀率计算名义现金流（=实际现金流*(1+i%)^t）, 默认为: 0")
 
 }
 
@@ -80,4 +85,13 @@ func calcNvrByInvest(investAmount float64, investPeriod int, incomeAmount float6
 		cashFlows[len(cashFlows)-1] += float64(investPeriod) * investAmount
 	}
 	return cashFlows
+}
+
+// 计算名义现金流
+func calcNominalCashFlows(cashFlows []float64, inflationRate float64) []float64 {
+	var nominalCashFlows []float64
+	for i, cashFlow := range cashFlows {
+		nominalCashFlows = append(nominalCashFlows, cashFlow*math.Pow(1+inflationRate, float64(i)))
+	}
+	return nominalCashFlows
 }

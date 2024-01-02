@@ -40,6 +40,13 @@ IRR计算器使用方法：
 
 		fmt.Println("Cash Flows: ", cashFlows)
 		fmt.Println("Periods: ", period)
+
+		// 引入通胀率，计算名义现金流
+		if inflationRate > 0 {
+			cashFlows = calcNominalCashFlows(cashFlows, inflationRate)
+			fmt.Println("Nominal Cash Flows: ", cashFlows)
+		}
+
 		irr := service.CalcIrr(cashFlows)
 		fmt.Printf("IRR: %.4f\n", irr)
 	},
